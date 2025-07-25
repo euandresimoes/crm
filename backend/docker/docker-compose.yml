@@ -1,0 +1,23 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+  auth-mysql: 
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authdb
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=adminpwd
+    ports:
+      - "3306:3306"
+
