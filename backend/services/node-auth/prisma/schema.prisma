@@ -20,7 +20,6 @@ model User {
   display_name   String?
   email          String   @unique
   password       String
-  phone_number   String   @unique
   email_verified Boolean  @default(false)
   role           Roles    @default(user)
   created_at     DateTime @default(now())

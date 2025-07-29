@@ -3,13 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as morgan from 'morgan';
 import * as client from 'prom-client';
+import { registry } from './shared/metrics/metrics.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // <-- Prometheus config
   const collectDefaultMetrics = client.collectDefaultMetrics;
-  collectDefaultMetrics();
+  collectDefaultMetrics({ register: registry });
   // -->
 
   // <-- Swagger config
