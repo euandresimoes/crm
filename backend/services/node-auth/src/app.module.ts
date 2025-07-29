@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
-import { MetricsModule } from './infra/metrics/metrics.module';
 import { CreateModule } from './modules/create/create.module';
 import { LoginModule } from './modules/login/login.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { MetricsModule } from './shared/metrics/metrics.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
-  imports: [MetricsModule, CreateModule, LoginModule],
+  imports: [
+    CreateModule,
+    LoginModule,
+    ProfileModule,
+    PrometheusModule.register(),
+    MetricsModule,
+  ],
 })
 export class AppModule { }

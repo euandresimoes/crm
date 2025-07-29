@@ -5,14 +5,30 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - crm-prometheus-data:/var/lib/prometheus
 
   grafana:
     image: grafana/grafana
     ports:
       - "3000:3000"
+    volumes:
+      - crm-grafana-data:/var/lib/grafana
+
+  auth-service:
+    build:
+      context: ../services/node-auth
+      dockerfile: Dockerfile
+    env_file:
+      - ../services/node-auth/.env
+      - .env                            
+    ports:
+      - "7001:7001"
+    depends_on:
+      auth-mysql:
+        condition: service_healthy
 
   auth-mysql: 
-    image: mysql:latest
+    image: mysql:8.0
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=authdb
@@ -20,4 +36,16 @@ services:
       - MYSQL_PASSWORD=adminpwd
     ports:
       - "3306:3306"
+    volumes:
+      - crm-auth-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
+volumes:
+  crm-prometheus-data:
+  crm-grafana-data:
+  crm-auth-mysql-data:
