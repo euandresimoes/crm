@@ -14,6 +14,11 @@ services:
     volumes:
       - crm-grafana-data:/var/lib/grafana
 
+  redis:
+    image: redis
+    volumes:
+      - crm-redis-data:/var/lib/redis
+
   auth-service:
     build:
       context: ../services/node-auth
@@ -26,6 +31,8 @@ services:
     depends_on:
       auth-mysql:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   auth-mysql: 
     image: mysql:8.0
@@ -48,4 +55,5 @@ services:
 volumes:
   crm-prometheus-data:
   crm-grafana-data:
+  crm-redis-data:
   crm-auth-mysql-data:

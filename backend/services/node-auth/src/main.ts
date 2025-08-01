@@ -8,24 +8,27 @@ import { registry } from './shared/metrics/metrics.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // <-- Prometheus config
+  /*
+   * Swagger config 
+   */
   const collectDefaultMetrics = client.collectDefaultMetrics;
   collectDefaultMetrics({ register: registry });
-  // -->
 
-  // <-- Swagger config
+  /*
+   * Swagger config 
+   */
   const config = new DocumentBuilder()
     .setTitle('v1/auth')
     .setVersion('v1')
     .build()
-
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);
-  // -->
 
-  // <-- Morgan config
+  /*
+   * Morgan config 
+   */
   app.use(morgan('dev'));
-  // -->
 
   await app.listen(process.env.PORT ?? 7001);
 }

@@ -30,6 +30,7 @@
     "@willsoto/nestjs-prometheus": "^6.0.2",
     "bcrypt": "^6.0.0",
     "class-validator": "^0.14.2",
+    "ioredis": "^5.7.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
     "prom-client": "^15.1.3",
