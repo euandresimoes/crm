@@ -1,4 +1,6 @@
 services:
+
+  # METRICS
   prometheus:
     image: prom/prometheus
     ports:
@@ -14,11 +16,13 @@ services:
     volumes:
       - crm-grafana-data:/var/lib/grafana
 
+  # REDIS CACHE
   redis:
     image: redis
     volumes:
       - crm-redis-data:/var/lib/redis
 
+  # CRM SERVICES
   auth-service:
     build:
       context: ../services/node-auth
@@ -52,8 +56,43 @@ services:
       retries: 5
       start_period: 10s
 
+  client-service:
+    build:
+      context: ../services/node-client
+      dockerfile: Dockerfile
+    env_file:
+      - ../services/node-client/.env
+      - .env                            
+    ports:
+      - "7002:7002"
+    depends_on:
+      client-mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  client-mysql: 
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=authdb
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=adminpwd
+    ports:
+      - "3307:3307"
+    volumes:
+      - crm-client-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+# VOLUMES
 volumes:
   crm-prometheus-data:
   crm-grafana-data:
   crm-redis-data:
   crm-auth-mysql-data:
+  crm-client-mysql-data:
