@@ -1,9 +1,10 @@
+import { collectDefaultMetrics } from './../node_modules/prom-client/index.d';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as morgan from 'morgan';
 import * as client from 'prom-client';
 import { registry } from './shared/metrics/metrics.service';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as morgan from 'morgan';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +19,7 @@ async function bootstrap() {
    * Swagger config 
    */
   const config = new DocumentBuilder()
-    .setTitle('v1/auth')
+    .setTitle('v1/client')
     .setVersion('v1')
     .build()
 
@@ -30,6 +31,6 @@ async function bootstrap() {
    */
   app.use(morgan('dev'));
 
-  await app.listen(process.env.PORT ?? 7001);
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
